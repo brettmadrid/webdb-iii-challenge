@@ -1,0 +1,48 @@
+first run yarn to install all needed dependencies already listed in the json file.
+
+install any additional dependencies: express, helmet, nodemon, knex, sqlite3, etc
+
+run knex init to create a knexfile.js
+
+then update the config file to work with the database - add:
+	useNullAsDefault: true,
+	migrations: {
+      		directory: './data/migrations'
+    	},
+    	seeds: {
+      		directory: './data/seeds'
+    	}
+
+then in index.js require: 
+	const dbConfig = require('./knexfile.js');
+
+and set a db variable that uses the config file:
+	const db = knex(dbConfig.development);
+
+now run in your directory: knex migrate:make "tableName" to create table schema js file/s
+
+then define the table:
+
+	// define table
+	exports.up = function(knex, Promise) {
+  	  return knex.schema.createTable('cohorts', tbl => {
+    		tbl.increments();
+    		tbl.string('name', 128)
+      		  .notNullable()
+      	  	  .unique();
+  		})
+	};
+
+	// remove table
+	exports.down = function(knex, Promise) {
+  	  return knex.schema.dropTableIfExists('cohorts');
+	};
+
+After schema stub is created above, create the table by running:
+	
+	knex migrate:latest
+
+this will create the table as well as the database if it does not already exist!
+
+to create seed file: knex seed:make 01-"tableName"
+to run seed file: knex seed:run // will run the seeds each time
