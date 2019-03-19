@@ -66,5 +66,19 @@ server.put('/api/cohorts/:id', async (req, res) => {
   } catch (error) {}
 });
 
+server.delete('/api/cohorts/:id', async (req, res) => {
+  try {
+    const count = await db('cohorts')
+      .where({ id: req.params.id })
+      .del();
+
+    if (count > 0) {
+      res.status(204).json({message: "Successfully deleted!"});
+    } else {
+      res.status(404).json({ message: 'Records not found' });
+    }
+  } catch (error) {}
+});
+
 const port = process.env.PORT || 9000;
 server.listen(port, () => console.log(`\nrunning on ${port}\n`));
