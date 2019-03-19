@@ -20,12 +20,31 @@ server.get('/api/cohorts', async (req, res) => {
   }
 });
 
-server.get('/api/students', async (req, res) => {
+// list a cohort by id
+server.get('/api/cohorts/:id', async (req, res) => {
+  // get the cohorts from the database
   try {
-    const students = await db('students'); // all the records
-    res.status(200).json(students);
+    const cohort = await db('cohorts')
+      .where({ id: req.params.id })
+      .first();
+    res.status(200).json(cohort);
   } catch (error) {
     res.status(500).json(error);
+  }
+});
+
+server.post('/api/cohorts', async (req, res) => {
+  try {
+    const [id] = await db('cohorts').insert(req.body);
+
+    const cohort = await db('cohorts')
+      .where({ id })
+      .first();
+
+    res.status(201).json(cohort);
+  } catch (error) {
+    const message = errors[error.errno] || 'We ran into an error';
+    res.status(500).json({ message, error });
   }
 });
 
