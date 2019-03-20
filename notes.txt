@@ -13,7 +13,7 @@ then update the config file to work with the database - add:
       		directory: './data/seeds'
     	}
 
-then in index.js require: 
+then in index.js require:
 	const dbConfig = require('./knexfile.js');
 
 and set a db variable that uses the config file:
